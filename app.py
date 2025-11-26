@@ -28,7 +28,8 @@ def get_base64_of_bin_file(bin_file):
             data = f.read()
         return base64.b64encode(data).decode()
     except Exception as e:
-        st.error(f"Error reading background image: {e}")
+        # Don't use st.error here as it might disrupt initial rendering
+        # st.error(f"Error reading background image: {e}") 
         return None
 
 def set_app_background(jpg_file):
@@ -42,7 +43,7 @@ def set_app_background(jpg_file):
     bin_str = get_base64_of_bin_file(jpg_file)
     if bin_str is None:
         return
-    
+        
     page_bg_img = f"""
     <style>
     /* Background styling */
@@ -189,6 +190,35 @@ def set_app_background(jpg_file):
 
 # Apply background
 set_app_background("alpha and digit.jpg")
+
+# -----------------------------------------------------------
+# 7️⃣ Developer Info Sidebar (NEW SECTION)
+# -----------------------------------------------------------
+with st.sidebar:
+    st.header("Developer Info 🧑‍💻")
+    st.markdown("### Pranav Sagar Gaikwad")
+    
+    # Optional: Display a profile picture if available
+    try:
+        # Replace "profile_pic.jpg" with your actual file name, or comment out if you don't have one
+        st.image("profile_pic.jpg", caption="Pranav Sagar Gaikwad", use_column_width=True)
+    except FileNotFoundError:
+        st.info("Profile picture 'profile_pic.jpg' not found.")
+
+    st.markdown(f"""
+        📧 **Email:** gaikwadpranav988@gmail.com
+        
+        <br>
+        
+        🔗 **LinkedIn:** [Pranav Gaikwad](https://www.linkedin.com/in/pranav-gaikwad-0b94032a)
+        
+        <br>
+        
+        🧠 **GitHub:** [pranavgaikwad51](https://github.com/pranavgaikwad51)
+    """)
+    st.write("---")
+    st.info("Built with ❤️ for better classification!")
+
 
 # -----------------------------------------------------------
 # 1️⃣ Load Model with Enhanced Error Handling
@@ -347,7 +377,7 @@ def get_contextual_prediction(pred_array, context_type):
         if get_char_type(idx) == target_type:
             return idx, pred_array[idx]
     
-    # Fallback
+    # Fallback to the absolute best prediction if no contextual match is found
     return top_indices[0], pred_array[top_indices[0]]
 
 # -----------------------------------------------------------
@@ -411,9 +441,13 @@ with col1:
                         show_steps=show_preprocessing
                     )
                     if processed_img is not None:
-                        pred = model.predict(processed_img)
-                        st.session_state.prediction = pred
-                        st.session_state.processed_steps = steps
+                        # Ensure model is defined before predicting
+                        if 'model' in locals() and model is not None:
+                            pred = model.predict(processed_img)
+                            st.session_state.prediction = pred
+                            st.session_state.processed_steps = steps
+                        else:
+                            st.error("Model is not loaded. Cannot predict.")
         
         with col_btn2:
             if st.button("🗑️ Clear Canvas", use_container_width=True):
@@ -438,9 +472,13 @@ with col1:
                         show_steps=show_preprocessing
                     )
                     if processed_img is not None:
-                        pred = model.predict(processed_img)
-                        st.session_state.prediction = pred
-                        st.session_state.processed_steps = steps
+                        # Ensure model is defined before predicting
+                        if 'model' in locals() and model is not None:
+                            pred = model.predict(processed_img)
+                            st.session_state.prediction = pred
+                            st.session_state.processed_steps = steps
+                        else:
+                            st.error("Model is not loaded. Cannot predict.")
 
 with col2:
     st.subheader("🔍 Prediction Results")
@@ -479,7 +517,8 @@ with col2:
         if show_preprocessing and st.session_state.processed_steps:
             with st.expander("🔬 View Preprocessing Steps", expanded=True):
                 steps = st.session_state.processed_steps
-                step_cols = st.columns(len(steps))
+                # Dynamically create columns based on number of steps
+                step_cols = st.columns(len(steps)) 
                 for idx, (step_name, step_img) in enumerate(steps.items()):
                     with step_cols[idx]:
                         st.image(step_img, caption=step_name.title(), use_column_width=True)
@@ -506,7 +545,7 @@ with col2:
                 <div style='display: flex; justify-content: space-between; align-items: center;'>
                     <div style='display: flex; align-items: center; gap: 12px;'>
                         <span style='font-size: 1.5em; font-weight: bold; 
-                                    min-width: 30px; text-align: center;'>{char}</span>
+                                     min-width: 30px; text-align: center;'>{char}</span>
                         <span style='opacity: 0.7; font-size: 0.9em;'>{char_type}</span>
                     </div>
                     <div style='display: flex; align-items: center; gap: 8px;'>
@@ -515,9 +554,9 @@ with col2:
                     </div>
                 </div>
                 <div style='background: rgba(59, 130, 246, 0.3); height: 4px; 
-                           border-radius: 2px; margin-top: 8px;'>
+                            border-radius: 2px; margin-top: 8px;'>
                     <div style='background: #3b82f6; height: 100%; width: {prob*100}%; 
-                               border-radius: 2px;'></div>
+                                 border-radius: 2px;'></div>
                 </div>
             </div>
             """, unsafe_allow_html=True)

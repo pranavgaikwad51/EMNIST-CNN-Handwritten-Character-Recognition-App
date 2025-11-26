@@ -188,44 +188,13 @@ def set_app_background(jpg_file):
     st.markdown(page_bg_img, unsafe_allow_html=True)
 
 # Apply background
-# ... (Lines 1-137 of your existing code, up to set_app_background)
-
-# Apply background
 set_app_background("alpha and digit.jpg")
 
 # -----------------------------------------------------------
-# 7️⃣ Developer Info Sidebar (NEW SECTION)
-# -----------------------------------------------------------
-with st.sidebar:
-    st.header("Developer Info 🧑‍💻")
-    # You might need to change the image name or comment this line if you don't have a profile picture
-    # Ensure 'profile_pic.jpg' is in the same directory, or change the filename
-    try:
-        st.image("profile_pic.jpg", caption="Pranav Sagar Gaikwad", use_column_width=True)
-    except FileNotFoundError:
-        st.info("Profile picture 'profile_pic.jpg' not found. Skipping image display.")
-
-    st.markdown("### Pranav Sagar Gaikwad")
-    st.markdown(f"""
-        📧 **Email:** gaikwadpranav988@gmail.com
-        
-        <br>
-        
-        🔗 **LinkedIn:** [Pranav Gaikwad](https://www.linkedin.com/in/pranav-gaikwad-0b94032a)
-        
-        <br>
-        
-        🧠 **GitHub:** [pranavgaikwad51](https://github.com/pranavgaikwad51)
-    """)
-    st.write("---")
-    st.info("Thanks for checking out my project!")
-    
-# -----------------------------------------------------------
-# 1️⃣ Load Model with Enhanced Error Handling (Existing Section)
+# 1️⃣ Load Model with Enhanced Error Handling
 # -----------------------------------------------------------
 @st.cache_resource
 def load_model():
-
     """Load the model with comprehensive error handling."""
     model_path = "cnn_emnist_digits_alphabets.pkl"
     
@@ -571,5 +540,4 @@ st.markdown("""
 <div style='text-align: center; opacity: 0.6; padding: 20px; font-size: 0.9em;'>
     Made with ❤️ using Streamlit | Model: CNN EMNIST Classifier
 </div>
-
 """, unsafe_allow_html=True)

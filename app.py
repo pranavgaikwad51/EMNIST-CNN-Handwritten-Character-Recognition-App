@@ -28,16 +28,15 @@ def get_base64_of_bin_file(bin_file):
             data = f.read()
         return base64.b64encode(data).decode()
     except Exception as e:
-        # Don't use st.error here as it might disrupt initial rendering
-        # st.error(f"Error reading background image: {e}") 
+        # File not found or read error
         return None
 
 def set_app_background(jpg_file):
     """
     Sets the app background to a blurred version of the specified JPG file.
-    Enhanced with better error handling and styling.
     """
     if not os.path.exists(jpg_file):
+        # File not found, exit gracefully
         return
         
     bin_str = get_base64_of_bin_file(jpg_file)
@@ -192,19 +191,12 @@ def set_app_background(jpg_file):
 set_app_background("alpha and digit.jpg")
 
 # -----------------------------------------------------------
-# 7️⃣ Developer Info Sidebar (NEW SECTION)
+# 7️⃣ Developer Info Sidebar
 # -----------------------------------------------------------
 with st.sidebar:
     st.header("Developer Info 🧑‍💻")
     st.markdown("### Pranav Sagar Gaikwad")
     
-    # Optional: Display a profile picture if available
-    try:
-        # Replace "profile_pic.jpg" with your actual file name, or comment out if you don't have one
-        st.image("profile_pic.jpg", caption="Pranav Sagar Gaikwad", use_column_width=True)
-    except FileNotFoundError:
-        st.info("Profile picture 'profile_pic.jpg' not found.")
-
     st.markdown(f"""
         📧 **Email:** gaikwadpranav988@gmail.com
         
@@ -441,7 +433,6 @@ with col1:
                         show_steps=show_preprocessing
                     )
                     if processed_img is not None:
-                        # Ensure model is defined before predicting
                         if 'model' in locals() and model is not None:
                             pred = model.predict(processed_img)
                             st.session_state.prediction = pred
@@ -472,7 +463,6 @@ with col1:
                         show_steps=show_preprocessing
                     )
                     if processed_img is not None:
-                        # Ensure model is defined before predicting
                         if 'model' in locals() and model is not None:
                             pred = model.predict(processed_img)
                             st.session_state.prediction = pred
@@ -517,7 +507,6 @@ with col2:
         if show_preprocessing and st.session_state.processed_steps:
             with st.expander("🔬 View Preprocessing Steps", expanded=True):
                 steps = st.session_state.processed_steps
-                # Dynamically create columns based on number of steps
                 step_cols = st.columns(len(steps)) 
                 for idx, (step_name, step_img) in enumerate(steps.items()):
                     with step_cols[idx]:
